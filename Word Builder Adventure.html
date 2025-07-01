@@ -1,811 +1,624 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Word Builder Adventure</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow-x: hidden;
-      position: relative;
-    }
+<title>Word Builder Adventure</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+  }
 
-    /* Animated clouds */
-    .cloud {
-      position: absolute;
-      background: white;
-      border-radius: 100px;
-      opacity: 0.7;
-      animation: drift 20s infinite;
-    }
+  /* Animated clouds */
+  .cloud {
+    position: absolute;
+    background: white;
+    border-radius: 100px;
+    opacity: 0.7;
+    animation: drift 20s infinite;
+    width: 100px;
+    height: 40px;
+    top: 10%;
+  }
 
-    .cloud::before,
-    .cloud::after {
-      content: '';
-      position: absolute;
-      background: white;
-      border-radius: 100px;
-    }
+  .cloud::before,
+  .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 100px;
+  }
 
-    .cloud::before {
-      width: 50px;
-      height: 50px;
-      top: -25px;
-      left: 10px;
-    }
+  .cloud::before {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    left: 10px;
+  }
 
-    .cloud::after {
-      width: 60px;
-      height: 40px;
-      top: -15px;
-      right: 10px;
-    }
+  .cloud::after {
+    width: 60px;
+    height: 40px;
+    top: -15px;
+    right: 10px;
+  }
 
-    @keyframes drift {
-      0% { transform: translateX(-100px); }
-      100% { transform: translateX(calc(100vw + 100px)); }
-    }
+  @keyframes drift {
+    0% { transform: translateX(-100px); }
+    100% { transform: translateX(calc(100vw + 100px)); }
+  }
 
-    /* Header */
-    .header {
-      width: 100%;
-      background: rgba(255,255,255,0.95);
-      padding: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+  /* Header */
+  .header {
+    width: 100%;
+    background: rgba(255,255,255,0.95);
+    padding: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
 
-    .game-modes {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+  .game-modes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
 
-    .mode-btn {
-      padding: 10px 20px;
-      border: 2px solid #5ee7df;
-      background: white;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-weight: bold;
-    }
+  .mode-btn {
+    padding: 10px 20px;
+    border: 2px solid #5ee7df;
+    background: white;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+  }
 
-    .mode-btn.active {
-      background: #5ee7df;
-      color: white;
-    }
+  .mode-btn.active {
+    background: #5ee7df;
+    color: white;
+  }
 
-    .stats {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      font-weight: bold;
-    }
+  .stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-weight: bold;
+  }
 
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 20px;
-    }
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+  }
 
-    /* Main container */
-    .game-container {
-      background: rgba(255,255,255,0.95);
-      border-radius: 30px;
-      padding: 30px;
-      margin: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-      max-width: 900px;
-      width: 90%;
-      animation: float 4s ease-in-out infinite;
-    }
+  /* Main container */
+  .game-container {
+    background: rgba(255,255,255,0.95);
+    border-radius: 30px;
+    padding: 30px;
+    margin: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 900px;
+    width: 90%;
+    animation: float 4s ease-in-out infinite;
+  }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
 
-    /* Picture display */
-    .picture-container {
-      text-align: center;
-      margin: 20px 0;
-    }
+  /* Picture display */
+  .picture-container {
+    text-align: center;
+    margin: 20px 0;
+  }
 
-    .picture-frame {
-      width: 250px;
-      height: 250px;
-      margin: 0 auto;
-      border: 5px solid #5ee7df;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 150px;
-      background: linear-gradient(135deg, rgba(94,231,223,0.1) 0%, rgba(180,144,202,0.1) 100%);
-      animation: picture-glow 2s ease-in-out infinite;
-    }
+  .picture-frame {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    border: 5px solid #5ee7df;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 150px;
+    background: linear-gradient(135deg, rgba(94,231,223,0.1) 0%, rgba(180,144,202,0.1) 100%);
+    animation: picture-glow 2s ease-in-out infinite;
+  }
 
-    @keyframes picture-glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(94,231,223,0.5); }
-      50% { box-shadow: 0 0 40px rgba(94,231,223,0.8); }
-    }
+  @keyframes picture-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(94,231,223,0.5); }
+    50% { box-shadow: 0 0 40px rgba(94,231,223,0.8); }
+  }
 
-    /* Word building area */
-    .word-building-area {
-      margin: 30px 0;
-      text-align: center;
-    }
+  /* Word building area */
+  .word-building-area {
+    margin: 30px 0;
+    text-align: center;
+  }
 
-    .word-slots {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-      min-height: 80px;
-    }
+  .word-slots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    min-height: 80px;
+    flex-wrap: wrap;
+  }
 
-    .letter-slot {
-      width: 70px;
-      height: 70px;
-      border: 3px dashed #b490ca;
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      font-weight: bold;
-      background: rgba(180,144,202,0.1);
-      transition: all 0.3s;
-      position: relative;
-    }
+  .letter-slot {
+    width: 70px;
+    height: 70px;
+    border: 3px dashed #b490ca;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: bold;
+    background: rgba(180,144,202,0.1);
+    transition: all 0.3s;
+    position: relative;
+    cursor: pointer;
+  }
 
-    .letter-slot.filled {
-      background: #b490ca;
-      color: white;
-      border-style: solid;
-      animation: slot-fill 0.5s ease-out;
-    }
+  .letter-slot.filled {
+    background: #b490ca;
+    color: white;
+    border-style: solid;
+    animation: slot-fill 0.5s ease-out;
+  }
 
-    .letter-slot.correct {
-      background: #4CAF50;
-      border-color: #4CAF50;
-    }
+  .letter-slot.correct {
+    background: #4CAF50;
+    border-color: #4CAF50;
+  }
 
-    .letter-slot.hint {
-      color: rgba(0,0,0,0.2);
-      font-size: 35px;
-    }
+  @keyframes slot-fill {
+    0% { transform: scale(0) rotate(180deg); }
+    50% { transform: scale(1.2) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
 
-    @keyframes slot-fill {
-      0% { transform: scale(0) rotate(180deg); }
-      50% { transform: scale(1.2) rotate(10deg); }
-      100% { transform: scale(1) rotate(0deg); }
-    }
+  /* Letter bank */
+  .letter-bank {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(94,231,223,0.1);
+    border-radius: 20px;
+  }
 
-    /* Letter bank */
-    .letter-bank {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin: 30px 0;
-      padding: 20px;
-      background: rgba(94,231,223,0.1);
-      border-radius: 20px;
-    }
+  .letter-tile {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #5ee7df 0%, #66a6ff 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
 
-    .letter-tile {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, #5ee7df 0%, #66a6ff 100%);
-      color: white;
-      border: none;
-      border-radius: 15px;
-      font-size: 30px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      position: relative;
-      overflow: hidden;
-    }
+  .letter-tile:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
 
-    .letter-tile:hover {
-      transform: translateY(-5px) scale(1.1);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
+  .letter-tile:active {
+    transform: translateY(0) scale(0.95);
+  }
 
-    .letter-tile:active {
-      transform: translateY(0) scale(0.95);
-    }
+  .letter-tile.used {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: scale(0.9);
+  }
 
-    .letter-tile.used {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: scale(0.9);
-    }
+  /* Controls */
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
 
-    .letter-tile::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-      transform: rotate(45deg);
-      transition: all 0.5s;
-    }
+  button {
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
 
-    .letter-tile:hover::after {
-      animation: shine 0.5s ease-in-out;
-    }
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+  }
 
-    @keyframes shine {
-      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-    }
+  /* Feedback */
+  .feedback {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px 0;
+    min-height: 30px;
+  }
 
-    /* Controls */
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin: 20px 0;
-      flex-wrap: wrap;
-    }
+  .success {
+    color: #4CAF50;
+    animation: bounce 0.5s ease-in-out;
+  }
 
-    button {
-      background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 50px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
+  .error {
+    color: #f44336;
+    animation: shake 0.5s ease-in-out;
+  }
 
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 7px 20px rgba(0,0,0,0.3);
-    }
+  @keyframes bounce {
+    0%, 20%, 60%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    80% { transform: translateY(-10px); }
+  }
 
-    /* Phonics helper */
-    .phonics-helper {
-      background: rgba(255,255,255,0.9);
-      padding: 20px;
-      border-radius: 20px;
-      margin: 20px 0;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .sound-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 15px;
-      flex-wrap: wrap;
-    }
-
-    .sound-btn {
-      padding: 10px 20px;
-      background: #66a6ff;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .sound-btn:hover {
-      transform: scale(1.1);
-      background: #5590ff;
-    }
-
-    /* Success animation */
-    .success-animation {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 100px;
-      animation: success-burst 1.5s ease-out;
-      pointer-events: none;
-      z-index: 1000;
-    }
-
-    @keyframes success-burst {
-      0% { 
-        transform: translate(-50%, -50%) scale(0) rotate(0deg); 
-        opacity: 1; 
-      }
-      50% { 
-        transform: translate(-50%, -50%) scale(1.5) rotate(180deg); 
-      }
-      100% { 
-        transform: translate(-50%, -50%) scale(0) rotate(360deg); 
-        opacity: 0; 
-      }
-    }
-
-    /* Streak indicator */
-    .streak-indicator {
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      background: rgba(255,255,255,0.95);
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-      text-align: center;
-      min-width: 150px;
-    }
-
-    .streak-fire {
-      font-size: 50px;
-      animation: fire-dance 1s ease-in-out infinite;
-    }
-
-    @keyframes fire-dance {
-      0%, 100% { transform: scale(1) rotate(-5deg); }
-      50% { transform: scale(1.2) rotate(5deg); }
-    }
-
-    /* Word categories */
-    .category-selector {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-      flex-wrap: wrap;
-    }
-
-    .category-btn {
-      padding: 8px 16px;
-      background: white;
-      border: 2px solid #5ee7df;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .category-btn.active {
-      background: #5ee7df;
-      color: white;
-    }
-
-    /* Settings */
-    .settings-panel {
-      position: fixed;
-      top: 80px;
-      left: 20px;
-      background: rgba(255,255,255,0.95);
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    }
-
-    .setting-item {
-      margin: 10px 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .picture-frame {
-        width: 200px;
-        height: 200px;
-        font-size: 120px;
-      }
-      
-      .letter-slot {
-        width: 55px;
-        height: 55px;
-        font-size: 30px;
-      }
-      
-      .letter-tile {
-        width: 50px;
-        height: 50px;
-        font-size: 25px;
-      }
-    }
-  </style>
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+  }
+</style>
 </head>
 <body>
-  <!-- Animated clouds -->
-  <div class="cloud" style="width: 100px; height: 40px; top: 10%; left: -100px; animation-duration: 25s;"></div>
-  <div class="cloud" style="width: 80px; height: 35px; top: 30%; left: -100px; animation-duration: 30s; animation-delay: 5s;"></div>
-  <div class="cloud" style="width: 120px; height: 45px; top: 60%; left: -100px; animation-duration: 35s; animation-delay: 10s;"></div>
+<!-- Animated clouds -->
+<div class="cloud" style="animation-delay: 0s;"></div>
+<div class="cloud" style="animation-delay: 7s; top: 20%;"></div>
+<div class="cloud" style="animation-delay: 14s; top: 5%;"></div>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="game-modes">
-      <button class="mode-btn active" onclick="setMode('spell')">Spell Words</button>
-      <button class="mode-btn" onclick="setMode('rhyme')">Rhyming</button>
-      <button class="mode-btn" onclick="setMode('first-letter')">First Letter</button>
-      <button class="mode-btn" onclick="setMode('build')">Word Builder</button>
+<!-- Header -->
+<div class="header">
+  <div class="game-modes">
+    <button class="mode-btn active" onclick="setMode('easy')">Easy (3-4 letters)</button>
+    <button class="mode-btn" onclick="setMode('medium')">Medium (5-6 letters)</button>
+    <button class="mode-btn" onclick="setMode('hard')">Hard (7+ letters)</button>
+  </div>
+  <div class="stats">
+    <div class="stat-item">
+      <span>⭐</span>
+      <span id="score">0</span>
     </div>
-    <div class="stats">
-      <div class="stat-item">
-        <span>⭐</span>
-        <span id="score">0</span>
-      </div>
-      <div class="stat-item">
-        <span>🏆</span>
-        <span id="level">1</span>
-      </div>
+    <div class="stat-item">
+      <span>🎯</span>
+      <span id="streak">0</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main game -->
+<div class="game-container">
+  <h1 style="text-align: center; color: #5ee7df; margin-bottom: 20px;">🌟 Word Builder Adventure 🌟</h1>
+  
+  <!-- Picture display -->
+  <div class="picture-container">
+    <div class="picture-frame" id="pictureFrame">
+      🐱
+    </div>
+    <h2 style="margin-top: 15px; color: #b490ca;" id="wordPrompt">What word matches this picture?</h2>
+  </div>
+
+  <!-- Word building area -->
+  <div class="word-building-area">
+    <div class="word-slots" id="wordSlots">
+      <!-- Letter slots will be generated here -->
     </div>
   </div>
 
-  <!-- Main Game Container -->
-  <div class="game-container">
-    <h1 style="text-align: center; color: #5ee7df; margin-bottom: 20px;">
-      📚 Word Builder Adventure 📚
-    </h1>
-
-    <!-- Category Selector -->
-    <div class="category-selector">
-      <button class="category-btn active" onclick="setCategory('animals')">🦁 Animals</button>
-      <button class="category-btn" onclick="setCategory('food')">🍎 Food</button>
-      <button class="category-btn" onclick="setCategory('colors')">🌈 Colors</button>
-      <button class="category-btn" onclick="setCategory('family')">👨‍👩‍👧 Family</button>
-      <button class="category-btn" onclick="setCategory('body')">👋 Body Parts</button>
-    </div>
-
-    <!-- Picture Display -->
-    <div class="picture-container">
-      <div class="picture-frame" id="pictureFrame">
-        🐱
-      </div>
-      <h2 id="wordHint" style="margin-top: 15px; color: #666;">What is this?</h2>
-    </div>
-
-    <!-- Phonics Helper -->
-    <div class="phonics-helper">
-      <div style="font-size: 20px; margin-bottom: 10px;">🔊 Sound it out!</div>
-      <div class="sound-buttons" id="soundButtons">
-        <!-- Dynamic sound buttons -->
-      </div>
-    </div>
-
-    <!-- Word Building Area -->
-    <div class="word-building-area">
-      <div class="word-slots" id="wordSlots">
-        <!-- Dynamic letter slots -->
-      </div>
-    </div>
-
-    <!-- Letter Bank -->
-    <div class="letter-bank" id="letterBank">
-      <!-- Dynamic letter tiles -->
-    </div>
-
-    <!-- Controls -->
-    <div class="controls">
-      <button onclick="checkWord()">✅ Check Word</button>
-      <button onclick="showHint()">💡 Hint</button>
-      <button onclick="speakWord()">🔊 Say Word</button>
-      <button onclick="newWord()">🎲 New Word</button>
-    </div>
+  <!-- Letter bank -->
+  <div class="letter-bank" id="letterBank">
+    <!-- Letter tiles will be generated here -->
   </div>
 
-  <!-- Streak Indicator -->
-  <div class="streak-indicator">
-    <div class="streak-fire">🔥</div>
-    <div style="font-size: 24px; font-weight: bold;" id="streakCount">0</div>
-    <div style="font-size: 14px;">Streak!</div>
+  <!-- Feedback -->
+  <div class="feedback" id="feedback"></div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button onclick="checkWord()">✅ Check Word</button>
+    <button onclick="clearWord()">🔄 Clear</button>
+    <button onclick="getHint()">💡 Hint</button>
+    <button onclick="nextWord()">➡️ Next Word</button>
   </div>
+</div>
 
-  <!-- Settings Panel -->
-  <div class="settings-panel">
-    <h3>⚙️ Settings</h3>
-    <div class="setting-item">
-      <label>Difficulty:</label>
-      <select id="difficulty" onchange="updateDifficulty()">
-        <option value="easy">Easy (3-4)</option>
-        <option value="medium">Medium (4-6)</option>
-        <option value="hard">Hard (6-8)</option>
-      </select>
-    </div>
-    <div class="setting-item">
-      <label>Show hints:</label>
-      <input type="checkbox" id="showHints" checked>
-    </div>
-    <div class="setting-item">
-      <label>Sounds:</label>
-      <input type="checkbox" id="soundEnabled" checked>
-    </div>
-    <div class="setting-item">
-      <label>Timer:</label>
-      <input type="checkbox" id="timerEnabled">
-    </div>
-  </div>
+<script>
+  // Game data
+  const gameData = {
+    easy: [
+      { word: 'CAT', emoji: '🐱', hint: 'A furry pet that says meow' },
+      { word: 'DOG', emoji: '🐶', hint: 'A loyal pet that barks' },
+      { word: 'SUN', emoji: '☀️', hint: 'Bright star in the sky' },
+      { word: 'CAR', emoji: '🚗', hint: 'Vehicle with four wheels' },
+      { word: 'TREE', emoji: '🌳', hint: 'Tall plant with leaves' },
+      { word: 'FISH', emoji: '🐟', hint: 'Swims in water' },
+      { word: 'BIRD', emoji: '🐦', hint: 'Flies in the sky' },
+      { word: 'BOOK', emoji: '📚', hint: 'You read this' }
+    ],
+    medium: [
+      { word: 'HOUSE', emoji: '🏠', hint: 'Where people live' },
+      { word: 'FLOWER', emoji: '🌸', hint: 'Beautiful plant that blooms' },
+      { word: 'APPLE', emoji: '🍎', hint: 'Red fruit that grows on trees' },
+      { word: 'SCHOOL', emoji: '🏫', hint: 'Where children learn' },
+      { word: 'HAPPY', emoji: '😊', hint: 'Feeling of joy' },
+      { word: 'WATER', emoji: '💧', hint: 'Clear liquid we drink' },
+      { word: 'FRIEND', emoji: '👫', hint: 'Someone you like to play with' }
+    ],
+    hard: [
+      { word: 'BUTTERFLY', emoji: '🦋', hint: 'Colorful insect with wings' },
+      { word: 'RAINBOW', emoji: '🌈', hint: 'Colorful arc in the sky' },
+      { word: 'ELEPHANT', emoji: '🐘', hint: 'Large animal with a trunk' },
+      { word: 'COMPUTER', emoji: '💻', hint: 'Electronic device for work' },
+      { word: 'PLAYGROUND', emoji: '🛝', hint: 'Fun place with swings and slides' },
+      { word: 'ADVENTURE', emoji: '🗺️', hint: 'Exciting journey or experience' }
+    ]
+  };
 
-  <script>
-    // Word database with categories
-    const wordDatabase = {
-      animals: {
-        easy: [
-          { word: 'CAT', emoji: '🐱', sounds: ['C', 'A', 'T'] },
-          { word: 'DOG', emoji: '🐶', sounds: ['D', 'O', 'G'] },
-          { word: 'PIG', emoji: '🐷', sounds: ['P', 'I', 'G'] },
-          { word: 'COW', emoji: '🐄', sounds: ['C', 'OW'] },
-          { word: 'BEE', emoji: '🐝', sounds: ['B', 'EE'] }
-        ],
-        medium: [
-          { word: 'BIRD', emoji: '🐦', sounds: ['B', 'IR', 'D'] },
-          { word: 'FISH', emoji: '🐟', sounds: ['F', 'I', 'SH'] },
-          { word: 'FROG', emoji: '🐸', sounds: ['F', 'R', 'O', 'G'] },
-          { word: 'DUCK', emoji: '🦆', sounds: ['D', 'U', 'CK'] },
-          { word: 'BEAR', emoji: '🐻', sounds: ['B', 'EAR'] }
-        ],
-        hard: [
-          { word: 'TIGER', emoji: '🐯', sounds: ['T', 'I', 'G', 'ER'] },
-          { word: 'MONKEY', emoji: '🐵', sounds: ['M', 'ON', 'K', 'EY'] },
-          { word: 'RABBIT', emoji: '🐰', sounds: ['R', 'A', 'BB', 'IT'] },
-          { word: 'TURTLE', emoji: '🐢', sounds: ['T', 'UR', 'T', 'LE'] }
-        ]
-      },
-      food: {
-        easy: [
-          { word: 'PIE', emoji: '🥧', sounds: ['P', 'IE'] },
-          { word: 'EGG', emoji: '🥚', sounds: ['E', 'GG'] },
-          { word: 'JAM', emoji: '🍓', sounds: ['J', 'A', 'M'] },
-          { word: 'TEA', emoji: '🍵', sounds: ['T', 'EA'] }
-        ],
-        medium: [
-          { word: 'APPLE', emoji: '🍎', sounds: ['A', 'PP', 'LE'] },
-          { word: 'BREAD', emoji: '🍞', sounds: ['B', 'R', 'EA', 'D'] },
-          { word: 'PIZZA', emoji: '🍕', sounds: ['P', 'I', 'ZZ', 'A'] },
-          { word: 'CANDY', emoji: '🍬', sounds: ['C', 'AN', 'D', 'Y'] }
-        ],
-        hard: [
-          { word: 'BANANA', emoji: '🍌', sounds: ['B', 'A', 'N', 'A', 'N', 'A'] },
-          { word: 'ORANGE', emoji: '🍊', sounds: ['O', 'R', 'AN', 'GE'] },
-          { word: 'COOKIE', emoji: '🍪', sounds: ['C', 'OO', 'K', 'IE'] }
-        ]
-      },
-      colors: {
-        easy: [
-          { word: 'RED', emoji: '🔴', sounds: ['R', 'E', 'D'] },
-          { word: 'BLUE', emoji: '🔵', sounds: ['B', 'L', 'UE'] }
-        ],
-        medium: [
-          { word: 'GREEN', emoji: '🟢', sounds: ['G', 'R', 'EE', 'N'] },
-          { word: 'BLACK', emoji: '⚫', sounds: ['B', 'L', 'A', 'CK'] },
-          { word: 'WHITE', emoji: '⚪', sounds: ['W', 'H', 'I', 'TE'] }
-        ],
-        hard: [
-          { word: 'YELLOW', emoji: '🟡', sounds: ['Y', 'E', 'LL', 'OW'] },
-          { word: 'PURPLE', emoji: '🟣', sounds: ['P', 'UR', 'P', 'LE'] },
-          { word: 'ORANGE', emoji: '🟠', sounds: ['O', 'R', 'AN', 'GE'] }
-        ]
-      },
-      family: {
-        easy: [
-          { word: 'MOM', emoji: '👩', sounds: ['M', 'O', 'M'] },
-          { word: 'DAD', emoji: '👨', sounds: ['D', 'A', 'D'] }
-        ],
-        medium: [
-          { word: 'BABY', emoji: '👶', sounds: ['B', 'A', 'B', 'Y'] },
-          { word: 'GIRL', emoji: '👧', sounds: ['G', 'IR', 'L'] },
-          { word: 'BOY', emoji: '👦', sounds: ['B', 'OY'] }
-        ],
-        hard: [
-          { word: 'SISTER', emoji: '👧', sounds: ['S', 'I', 'S', 'T', 'ER'] },
-          { word: 'BROTHER', emoji: '👦', sounds: ['B', 'R', 'O', 'TH', 'ER'] },
-          { word: 'FAMILY', emoji: '👨‍👩‍👧‍👦', sounds: ['F', 'A', 'M', 'I', 'L', 'Y'] }
-        ]
-      },
-      body: {
-        easy: [
-          { word: 'EYE', emoji: '👁️', sounds: ['EYE'] },
-          { word: 'EAR', emoji: '👂', sounds: ['EAR'] },
-          { word: 'ARM', emoji: '💪', sounds: ['AR', 'M'] }
-        ],
-        medium: [
-          { word: 'HAND', emoji: '✋', sounds: ['H', 'AN', 'D'] },
-          { word: 'FOOT', emoji: '🦶', sounds: ['F', 'OO', 'T'] },
-          { word: 'NOSE', emoji: '👃', sounds: ['N', 'O', 'SE'] },
-          { word: 'FACE', emoji: '😊', sounds: ['F', 'A', 'CE'] }
-        ],
-        hard: [
-          { word: 'FINGER', emoji: '👆', sounds: ['F', 'IN', 'G', 'ER'] },
-          { word: 'MOUTH', emoji: '👄', sounds: ['M', 'OU', 'TH'] }
-        ]
-      }
-    };
+  // Game state
+  let currentMode = 'easy';
+  let currentWord = null;
+  let currentSlots = [];
+  let score = 0;
+  let streak = 0;
+  let hintsUsed = 0;
 
-    // Game state
-    let currentMode = 'spell';
-    let currentCategory = 'animals';
-    let currentDifficulty = 'easy';
-    let currentWord = null;
-    let selectedLetters = [];
-    let score = 0;
-    let level = 1;
-    let streak = 0;
-    let hintLevel = 0;
+  // Initialize game
+  function initGame() {
+    nextWord();
+  }
 
-    // Initialize game
-    function init() {
-      updateScore();
-      updateStreak();
-      newWord();
+  // Set difficulty mode
+  function setMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    nextWord();
+  }
+
+  // Get next word
+  function nextWord() {
+    const words = gameData[currentMode];
+    currentWord = words[Math.floor(Math.random() * words.length)];
+    hintsUsed = 0;
+    setupWord();
+    generateLetterBank();
+    clearFeedback();
+  }
+
+  // Setup word slots
+  function setupWord() {
+    const wordSlots = document.getElementById('wordSlots');
+    const pictureFrame = document.getElementById('pictureFrame');
+    
+    wordSlots.innerHTML = '';
+    currentSlots = [];
+    
+    // Display picture
+    pictureFrame.textContent = currentWord.emoji;
+    
+    // Create letter slots
+    for (let i = 0; i < currentWord.word.length; i++) {
+      const slot = document.createElement('div');
+      slot.className = 'letter-slot';
+      slot.dataset.position = i;
+      slot.onclick = () => removeLetterFromSlot(i);
+      wordSlots.appendChild(slot);
+      currentSlots.push('');
     }
+  }
 
-    // Set game mode
-    function setMode(mode) {
-      currentMode = mode;
-      document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.classList.remove('active');
+  // Generate letter bank
+  function generateLetterBank() {
+    const letterBank = document.getElementById('letterBank');
+    letterBank.innerHTML = '';
+    
+    // Get letters from current word
+    const wordLetters = currentWord.word.split('');
+    
+    // Add some random letters to make it challenging
+    const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const extraLetters = [];
+    const numExtra = Math.min(6, Math.max(3, 10 - wordLetters.length));
+    
+    for (let i = 0; i < numExtra; i++) {
+      let randomLetter;
+      do {
+        randomLetter = allLetters[Math.floor(Math.random() * allLetters.length)];
+      } while (wordLetters.includes(randomLetter) || extraLetters.includes(randomLetter));
+      extraLetters.push(randomLetter);
+    }
+    
+    // Combine and shuffle
+    const allGameLetters = [...wordLetters, ...extraLetters];
+    shuffleArray(allGameLetters);
+    
+    // Create letter tiles
+    allGameLetters.forEach(letter => {
+      const tile = document.createElement('button');
+      tile.className = 'letter-tile';
+      tile.textContent = letter;
+      tile.onclick = () => selectLetter(letter, tile);
+      letterBank.appendChild(tile);
+    });
+  }
+
+  // Shuffle array
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  // Select letter from bank
+  function selectLetter(letter, tile) {
+    if (tile.classList.contains('used')) return;
+    
+    // Find first empty slot
+    const emptySlotIndex = currentSlots.findIndex(slot => slot === '');
+    if (emptySlotIndex === -1) return;
+    
+    // Place letter in slot
+    currentSlots[emptySlotIndex] = letter;
+    const slotElement = document.querySelector(`[data-position="${emptySlotIndex}"]`);
+    slotElement.textContent = letter;
+    slotElement.classList.add('filled');
+    
+    // Mark tile as used
+    tile.classList.add('used');
+  }
+
+  // Remove letter from slot
+  function removeLetterFromSlot(position) {
+    const letter = currentSlots[position];
+    if (!letter) return;
+    
+    // Clear slot
+    currentSlots[position] = '';
+    const slotElement = document.querySelector(`[data-position="${position}"]`);
+    slotElement.textContent = '';
+    slotElement.classList.remove('filled', 'correct');
+    
+    // Reactivate letter tile
+    const tiles = document.querySelectorAll('.letter-tile');
+    tiles.forEach(tile => {
+      if (tile.textContent === letter && tile.classList.contains('used')) {
+        tile.classList.remove('used');
+        return;
+      }
+    });
+  }
+
+  // Check if word is correct
+  function checkWord() {
+    const userWord = currentSlots.join('');
+    const correctWord = currentWord.word;
+    
+    if (userWord.length !== correctWord.length) {
+      showFeedback('Complete the word first!', 'error');
+      return;
+    }
+    
+    if (userWord === correctWord) {
+      // Correct!
+      score += (10 - hintsUsed * 2);
+      streak++;
+      updateStats();
+      
+      // Mark all slots as correct
+      document.querySelectorAll('.letter-slot').forEach(slot => {
+        slot.classList.add('correct');
       });
-      event.target.classList.add('active');
-      newWord();
-    }
-
-    // Set category
-    function setCategory(category) {
-      currentCategory = category;
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      event.target.classList.add('active');
-      newWord();
-    }
-
-    // Update difficulty
-    function updateDifficulty() {
-      currentDifficulty = document.getElementById('difficulty').value;
-      newWord();
-    }
-
-    // Get new word
-    function newWord() {
-      const words = wordDatabase[currentCategory][currentDifficulty];
-      currentWord = words[Math.floor(Math.random() * words.length)];
-      selectedLetters = [];
-      hintLevel = 0;
       
-      // Update picture
-      document.getElementById('pictureFrame').textContent = currentWord.emoji;
+      showFeedback('🎉 Excellent! Well done!', 'success');
       
-      // Set up the game based on mode
-      switch(currentMode) {
-        case 'spell':
-          setupSpellingGame();
-          break;
-        case 'rhyme':
-          setupRhymingGame();
-          break;
-        case 'first-letter':
-          setupFirstLetterGame();
-          break;
-        case 'build':
-          setupWordBuildingGame();
-          break;
+      setTimeout(() => {
+        nextWord();
+      }, 2000);
+    } else {
+      // Incorrect
+      streak = 0;
+      updateStats();
+      showFeedback('Try again! Check your spelling.', 'error');
+    }
+  }
+
+  // Clear current word
+  function clearWord() {
+    currentSlots.fill('');
+    document.querySelectorAll('.letter-slot').forEach(slot => {
+      slot.textContent = '';
+      slot.classList.remove('filled', 'correct');
+    });
+    document.querySelectorAll('.letter-tile').forEach(tile => {
+      tile.classList.remove('used');
+    });
+    clearFeedback();
+  }
+
+  // Get hint
+  function getHint() {
+    if (hintsUsed >= 2) {
+      showFeedback('No more hints available!', 'error');
+      return;
+    }
+    
+    hintsUsed++;
+    
+    if (hintsUsed === 1) {
+      showFeedback(`Hint: ${currentWord.hint}`, '');
+    } else {
+      // Show first letter
+      const firstLetter = currentWord.word[0];
+      if (currentSlots[0] === '') {
+        // Find the first letter tile and auto-select it
+        const tiles = document.querySelectorAll('.letter-tile');
+        tiles.forEach(tile => {
+          if (tile.textContent === firstLetter && !tile.classList.contains('used')) {
+            selectLetter(firstLetter, tile);
+            return;
+          }
+        });
       }
+      showFeedback(`First letter: ${firstLetter}`, '');
     }
+  }
 
-    // Setup spelling game
-    function setupSpellingGame() {
-      document.getElementById('wordHint').textContent = 'Spell this word!';
-      
-      // Create word slots
-      const wordSlots = document.getElementById('wordSlots');
-      wordSlots.innerHTML = '';
-      
-      for (let i = 0; i < currentWord.word.length; i++) {
-        const slot = document.createElement('div');
-        slot.className = 'letter-slot';
-        slot.dataset.index = i;
-        slot.dataset.letter = currentWord.word[i];
-        
-        // Show hint letters if enabled
-        if (document.getElementById('showHints').checked && i === 0) {
-          slot.textContent = currentWord.word[i];
-          slot.classList.add('hint');
-        }
-        
-        wordSlots.appendChild(slot);
-      }
-      
-      // Create letter bank
-      createLetterBank();
-      
-      // Create sound buttons
-      createSoundButtons();
-    }
+  // Show feedback
+  function showFeedback(message, type) {
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = message;
+    feedback.className = `feedback ${type}`;
+  }
 
-    // Create letter bank
-    function createLetterBank() {
-      const letterBank = document.getElementById('letterBank');
-      letterBank.innerHTML = '';
-      
-      // Get letters for the word plus some extras
-      let letters = currentWord.word.split('');
-      const extraLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-      
-      // Add random extra letters
-      const numExtras = Math.max(3, 8 - letters.length);
-      for (let i = 0; i < numExtras; i++) {
-        const randomLetter = extraLetters[Math.floor(Math.random() * extraLetters.length)];
-        if (!letters.includes(randomLetter)) {
-          letters.push(randomLetter);
-        }
-      }
-      
-      // Shuffle letters
-      letters.sort(() => Math.random() - 0.5);
-      
-      // Create letter tiles
-      letters.forEach(letter => {
-        const tile = document.createElement('button');
-        tile.className = 'letter-tile';
-        tile.textContent = letter;
-        tile.onclick = () => selectLetter(letter, tile);
-        letterBank.appendChild(tile);
-      });
-    }
+  // Clear feedback
+  function clearFeedback() {
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = '';
+    feedback.className = 'feedback';
+  }
 
-    // Select letter
-    function selectLetter(letter, tile) {
-      if (tile.classList.contains('used')) return;
-      
-      // Find next empty slot
-      const slots = document.querySelectorAll('.letter-slot:not(.filled)');
-      if (slots.length === 0) return;
-      
-      const nextSlot = slots[0];
-      nextSlot.textContent = letter;
-      nextSlot.classList.add('filled');
-      
-      tile.classList.add('used');
-      selectedLetters.push({ letter, tile, slot: nextSlot });
-      
-      // Play letter sound
-      if (document.getElementById('soundEnabled').checked) {
-        speakLetter(letter);
-      }
-      
-      // Auto-check if word is complete
-      if (document.querySelectorAll('.letter-slot:not(.filled)').length === 0) {
-        setTimeout(() => checkWord(), 500);
-      }
-    }
+  // Update stats
+  function updateStats() {
+    document.getElementById('score').textContent = score;
+    document.getElementById('streak').textContent = streak;
+  }
 
-    // Create sound buttons
-    function createSoundButtons() {
-      const soundButtons = document.getElementById('soundButtons');
-      soundButtons.innerHTML = '';
-      
-      currentWord.sounds.forEach((sound, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'sound-btn';
-        btn.textContent = sound;
-        btn.onclick = () => playSound(sound);
-        soundButtons.appendChild(btn);
-      });
-    }
-
-    // Check word
-    function checkWord()
+  // Start the game
+  initGame();
+</script>
+</body>
+</html>
