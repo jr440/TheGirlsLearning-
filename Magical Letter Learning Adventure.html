@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Magical Letter Learning Adventure</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated background stars */
+    .star {
+      position: absolute;
+      background: white;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Progress bar */
+    .progress-container {
+      width: 90%;
+      max-width: 600px;
+      height: 30px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 15px;
+      margin: 20px 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+      border-radius: 15px;
+      transition: width 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Main container */
+    .game-container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 30px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Letter display */
+    .letter-display {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    #letterGuide {
+      font-size: 200px;
+      color: rgba(0,0,0,0.1);
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Canvas styling */
+    #canvas {
+      border: 3px solid #667eea;
+      border-radius: 20px;
+      background: white;
+      touch-action: none;
+      cursor: crosshair;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* Celebration animation */
+    .celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 100px;
+      animation: celebrate 1s ease-out;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    @keyframes celebrate {
+      0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(2) rotate(360deg); opacity: 0; }
+    }
+
+    /* Settings panel */
+    .settings {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.9);
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .setting-item {
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      width: 100px;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Letter info */
+    .letter-info {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 15px;
+      font-size: 20px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 20px;
+        width: 95%;
+      }
+      
+      #letterGuide {
+        font-size: 150px;
+      }
+      
+      button {
+        padding: 12px 20px;
+        font-size: 16px;
+      }
+    }
+
+    /* Accessibility features */
+    .high-contrast #letterGuide {
+      color: rgba(0,0,0,0.3);
+    }
+
+    .high-contrast #canvas {
+      border-color: #000;
+    }
+
+    /* Particle effects */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      animation: particle-float 2s ease-out forwards;
+    }
+
+    @keyframes particle-float {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-100px) scale(0); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar">0 / 26</div>
+  </div>
+
+  <!-- Main Game Container -->
+  <div class="game-container">
+    <h1 style="color: #667eea; margin-bottom: 20px;">✨ Magical Letter Learning ✨</h1>
+    
+    <!-- Letter Info -->
+    <div class="letter-info" id="letterInfo">
+      Let's learn the letter <strong>A</strong> - like in Apple! 🍎
+    </div>
+
+    <!-- Canvas Container -->
+    <div class="letter-display">
+      <div id="letterGuide">A</div>
+      <canvas id="canvas" width="400" height="400"></canvas>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button onclick="previousLetter()">⬅️ Previous</button>
+      <button onclick="clearCanvas()">🧹 Clear</button>
+      <button onclick="nextLetter()">Next ➡️</button>
+      <button onclick="playSound()">🔊 Hear Sound</button>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div class="settings">
+    <h3>Settings ⚙️</h3>
+    <div class="setting-item">
+      <label>Sounds:</label>
+      <input type="checkbox" id="soundToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label>Effects:</label>
+      <input type="checkbox" id="effectsToggle" checked>
+    </div>
+    <div class="setting-item">
+      <label>Brush Size:</label>
+      <input type="range" id="brushSize" min="2" max="20" value="8">
+    </div>
+    <div class="setting-item">
+      <label>High Contrast:</label>
+      <input type="checkbox" id="contrastToggle">
+    </div>
+  </div>
+
+  <script>
+    // Letter data with associated words and emojis
+    const letterData = {
+      'A': { word: 'Apple', emoji: '🍎' },
+      'B': { word: 'Ball', emoji: '⚽' },
+      'C': { word: 'Cat', emoji: '🐱' },
+      'D': { word: 'Dog', emoji: '🐶' },
+      'E': { word: 'Elephant', emoji: '🐘' },
+      'F': { word: 'Fish', emoji: '🐟' },
+      'G': { word: 'Grapes', emoji: '🍇' },
+      'H': { word: 'House', emoji: '🏠' },
+      'I': { word: 'Ice Cream', emoji: '🍦' },
+      'J': { word: 'Juice', emoji: '🧃' },
+      'K': { word: 'Kite', emoji: '🪁' },
+      'L': { word: 'Lion', emoji: '🦁' },
+      'M': { word: 'Moon', emoji: '🌙' },
+      'N': { word: 'Nest', emoji: '🪺' },
+      'O': { word: 'Orange', emoji: '🍊' },
+      'P': { word: 'Pizza', emoji: '🍕' },
+      'Q': { word: 'Queen', emoji: '👸' },
+      'R': { word: 'Rainbow', emoji: '🌈' },
+      'S': { word: 'Star', emoji: '⭐' },
+      'T': { word: 'Tree', emoji: '🌳' },
+      'U': { word: 'Umbrella', emoji: '☂️' },
+      'V': { word: 'Violin', emoji: '🎻' },
+      'W': { word: 'Watermelon', emoji: '🍉' },
+      'X': { word: 'Xylophone', emoji: '🎵' },
+      'Y': { word: 'Yacht', emoji: '🛥️' },
+      'Z': { word: 'Zebra', emoji: '🦓' }
+    };
+
+    const letters = Object.keys(letterData);
+    let current = 0;
+    let completedLetters = new Set();
+    let strokes = [];
+    let currentStroke = [];
+    
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const letterGuide = document.getElementById('letterGuide');
+    const letterInfo = document.getElementById('letterInfo');
+    const progressBar = document.getElementById('progressBar');
+    
+    let drawing = false;
+    let rainbowMode = false;
+    let hue = 0;
+
+    // Initialize
+    function init() {
+      createStars();
+      showLetter();
+      updateProgress();
+      
+      // Set up canvas drawing properties
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+
+    // Create background stars
+    function createStars() {
+      for (let i = 0; i < 20; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 20 + 10 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        document.body.appendChild(star);
+      }
+    }
+
+    // Show current letter
+    function showLetter() {
+      const letter = letters[current];
+      const data = letterData[letter];
+      
+      letterGuide.textContent = letter;
+      letterInfo.innerHTML = `Let's learn the letter <strong>${letter}</strong> - like in ${data.word}! ${data.emoji}`;
+      
+      clearCanvas();
+      
+      if (document.getElementById('soundToggle').checked) {
+        playLetterSound(letter);
+      }
+    }
+
+    // Clear canvas
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      strokes = [];
+      currentStroke = [];
+    }
+
+    // Navigation
+    function nextLetter() {
+      if (strokes.length > 0 && !completedLetters.has(letters[current])) {
+        completedLetters.add(letters[current]);
+        celebrate();
+      }
+      current = (current + 1) % letters.length;
+      showLetter();
+      updateProgress();
+    }
+
+    function previousLetter() {
+      current = (current - 1 + letters.length) % letters.length;
+      showLetter();
+      updateProgress();
+    }
+
+    // Update progress
+    function updateProgress() {
+      const progress = completedLetters.size;
+      progressBar.style.width = (progress / 26 * 100) + '%';
+      progressBar.textContent = `${progress} / 26`;
+    }
+
+    // Celebration effect
+    function celebrate() {
+      if (!document.getElementById('effectsToggle').checked) return;
+      
+      const celebration = document.createElement('div');
+      celebration.className = 'celebration';
+      celebration.textContent = ['🎉', '⭐', '🌟', '✨', '🎊'][Math.floor(Math.random() * 5)];
+      document.body.appendChild(celebration);
+      
+      setTimeout(() => celebration.remove(), 1000);
+      
+      // Create particle effects
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => createParticle(), i * 50);
+      }
+      
+      if (document.getElementById('soundToggle').checked) {
+        playSuccessSound();
+      }
+    }
+
+    // Particle effect
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.textContent = ['✨', '⭐', '💫', '🌟'][Math.floor(Math.random() * 4)];
+      particle.style.left = Math.random() * window.innerWidth + 'px';
+      particle.style.top = Math.random() * window.innerHeight + 'px';
+      particle.style.fontSize = Math.random() * 20 + 20 + 'px';
+      document.body.appendChild(particle);
+      
+      setTimeout(() => particle.remove(), 2000);
+    }
+
+    // Sound functions (using Web Audio API)
+    function playSound() {
+      playLetterSound(letters[current]);
+    }
+
+    function playLetterSound(letter) {
+      if (!document.getElementById('soundToggle').checked) return;
+      
+      // Using speech synthesis as a simple solution
+      const utterance = new SpeechSynthesisUtterance(letter);
+      utterance.rate = 0.8;
+      utterance.pitch = 1.2;
+      speechSynthesis.speak(utterance);
+      
+      // Also say the word
+      setTimeout(() => {
+        const wordUtterance = new SpeechSynthesisUtterance(letterData[letter].word);
+        wordUtterance.rate = 0.8;
+        speechSynthesis.speak(wordUtterance);
+      }, 1000);
+    }
+
+    function playSuccessSound() {
+      // Create a simple success sound using Web Audio API
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+      oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+      oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    }
+
+    // Drawing functions
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      if (e.touches) {
+        return [
+          e.touches[0].clientX - rect.left,
+          e.touches[0].clientY - rect.top
+        ];
+      }
+      return [e.offsetX, e.offsetY];
+    }
+
+    function startDrawing(e) {
+      drawing = true;
+      const [x, y] = getPos(e);
+      currentStroke = [[x, y]];
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+      e.preventDefault();
+      
+      const [x, y] = getPos(e);
+      currentStroke.push([x, y]);
+      
+      // Rainbow mode
+      if (e.shiftKey || rainbowMode) {
+        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+        hue = (hue + 2) % 360;
+      } else {
+        ctx.strokeStyle = '#667eea';
+      }
+      
+      ctx.lineWidth = document.getElementById('brushSize').value;
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+
+    function stopDrawing() {
+      if (drawing && currentStroke.length > 1) {
+        strokes.push(currentStroke);
+      }
+      drawing = false;
+    }
+
+    // Event listeners
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('touchstart', startDrawing);
+    
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchmove', draw);
+    
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseleave', stopDrawing);
+    canvas.addEventListener('touchend', stopDrawing);
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextLetter();
+      if (e.key === 'ArrowLeft') previousLetter();
+      if (e.key === ' ') clearCanvas();
+      if (e.key === 'r') rainbowMode = !rainbowMode;
+    });
+
+    // Settings listeners
+    document.getElementById('contrastToggle').addEventListener('change', (e) => {
+      document.body.classList.toggle('high-contrast', e.target.checked);
+    });
+
+    // Initialize the app
+    init();
+  </script>
+</body>
+</html>
