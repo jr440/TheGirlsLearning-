@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toddler Sound Keyboard</title>
+  <style>
+      body {
+          margin: 0;
+          padding: 20px;
+          background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+          background-size: 400% 400%;
+          animation: gradientShift 3s ease infinite;
+          font-family: 'Comic Sans MS', cursive, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-height: 100vh;
+      }
+
+      @keyframes gradientShift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+      }
+
+      .title {
+          font-size: 3em;
+          color: white;
+          text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+          margin-bottom: 20px;
+          animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+          40% { transform: translateY(-10px); }
+          60% { transform: translateY(-5px); }
+      }
+
+      .instructions {
+          font-size: 1.5em;
+          color: white;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+          margin-bottom: 30px;
+          text-align: center;
+      }
+
+      .sound-display {
+          font-size: 4em;
+          color: white;
+          text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+          margin: 20px;
+          min-height: 80px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+      }
+
+      .key-section {
+          margin: 20px 0;
+          width: 100%;
+          max-width: 1000px;
+      }
+
+      .section-title {
+          font-size: 1.8em;
+          color: white;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+          text-align: center;
+          margin-bottom: 15px;
+      }
+
+      .key-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 10px;
+          justify-items: center;
+      }
+
+      .key-button {
+          padding: 15px;
+          font-size: 1em;
+          font-weight: bold;
+          border: none;
+          border-radius: 15px;
+          background: rgba(255,255,255,0.9);
+          color: #333;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+          min-width: 100px;
+          text-align: center;
+      }
+
+      .key-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      }
+
+      .key-button.active {
+          transform: scale(0.95);
+          background: #ff6b6b;
+          color: white;
+      }
+
+      .space-button {
+          grid-column: 1 / -1;
+          max-width: 200px;
+          margin: 0 auto;
+      }
+  </style>
+</head>
+<body>
+  <h1 class="title">🎵 Sound Keyboard Fun! 🎵</h1>
+  <div class="instructions">Press any key to make sounds!</div>
+  <div class="sound-display" id="soundDisplay">Press a key!</div>
+  
+  <div class="key-section">
+      <div class="section-title">🔤 Letters A-M</div>
+      <div class="key-grid">
+          <div class="key-button" data-key="a">A - Animal</div>
+          <div class="key-button" data-key="b">B - Beep</div>
+          <div class="key-button" data-key="c">C - Car</div>
+          <div class="key-button" data-key="d">D - Drum</div>
+          <div class="key-button" data-key="e">E - Elephant</div>
+          <div class="key-button" data-key="f">F - Fun</div>
+          <div class="key-button" data-key="g">G - Giggle</div>
+          <div class="key-button" data-key="h">H - Hello</div>
+          <div class="key-button" data-key="i">I - Yum</div>
+          <div class="key-button" data-key="j">J - Jump</div>
+          <div class="key-button" data-key="k">K - Click</div>
+          <div class="key-button" data-key="l">L - Love</div>
+          <div class="key-button" data-key="m">M - Music</div>
+      </div>
+  </div>
+
+  <div class="key-section">
+      <div class="section-title">🔤 Letters N-Z</div>
+      <div class="key-grid">
+          <div class="key-button" data-key="n">N - Night</div>
+          <div class="key-button" data-key="o">O - Ooh</div>
+          <div class="key-button" data-key="p">P - Pop</div>
+          <div class="key-button" data-key="q">Q - Queen</div>
+          <div class="key-button" data-key="r">R - Rainbow</div>
+          <div class="key-button" data-key="s">S - Star</div>
+          <div class="key-button" data-key="t">T - Toot</div>
+          <div class="key-button" data-key="u">U - Up</div>
+          <div class="key-button" data-key="v">V - Violin</div>
+          <div class="key-button" data-key="w">W - Whoosh</div>
+          <div class="key-button" data-key="x">X - X-ray</div>
+          <div class="key-button" data-key="y">Y - Yellow</div>
+          <div class="key-button" data-key="z">Z - Zap</div>
+      </div>
+  </div>
+
+  <div class="key-section">
+      <div class="section-title">🔢 Numbers</div>
+      <div class="key-grid">
+          <div class="key-button" data-key="1">1 - One</div>
+          <div class="key-button" data-key="2">2 - Two</div>
+          <div class="key-button" data-key="3">3 - Three</div>
+          <div class="key-button" data-key="4">4 - Four</div>
+          <div class="key-button" data-key="5">5 - Five</div>
+      </div>
+  </div>
+
+  <div class="key-section">
+      <div class="section-title">🚀 Special</div>
+      <div class="key-grid">
+          <div class="key-button space-button" data-key=" ">SPACE - Rocket</div>
+      </div>
+  </div>
+
+  <script>
+      // Create audio context for generating sounds
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Sound mappings for different keys
+      const soundMap = {
+          'a': { freq: 220, sound: '🐶 Woof!', color: '#ff6b6b' },
+          'b': { freq: 440, sound: '🔔 Beep!', color: '#4ecdc4' },
+          'c': { freq: 330, sound: '🚗 Vroom!', color: '#45b7d1' },
+          'd': { freq: 165, sound: '🥁 Boom!', color: '#96ceb4' },
+          'e': { freq: 277, sound: '🐘 Trumpet!', color: '#ffeaa7' },
+          'f': { freq: 370, sound: '🎉 Yay!', color: '#fd79a8' },
+          'g': { freq: 415, sound: '😄 Hehe!', color: '#fdcb6e' },
+          'h': { freq: 494, sound: '👋 Hi!', color: '#6c5ce7' },
+          'i': { freq: 523, sound: '🍦 Yum!', color: '#a29bfe' },
+          'j': { freq: 587, sound: '🤸 Jump!', color: '#fd79a8' },
+          'k': { freq: 659, sound: '🔑 Click!', color: '#00b894' },
+          'l': { freq: 698, sound: '💕 Love!', color: '#e17055' },
+          'm': { freq: 784, sound: '🎵 Music!', color: '#0984e3' },
+          'n': { freq: 880, sound: '🌙 Night!', color: '#6c5ce7' },
+          'o': { freq: 988, sound: '⭕ Ooh!', color: '#00cec9' },
+          'p': { freq: 1047, sound: '🎈 Pop!', color: '#ff7675' },
+          'q': { freq: 1175, sound: '👑 Queen!', color: '#fd79a8' },
+          'r': { freq: 1319, sound: '🌈 Rainbow!', color: '#fdcb6e' },
+          's': { freq: 1397, sound: '⭐ Star!', color: '#ffeaa7' },
+          't': { freq: 1568, sound: '🎺 Toot!', color: '#81ecec' },
+          'u': { freq: 1760, sound: '☂️ Up!', color: '#74b9ff' },
+          'v': { freq: 1976, sound: '🎻 Violin!', color: '#a29bfe' },
+          'w': { freq: 2093, sound: '🌊 Whoosh!', color: '#00b894' },
+          'x': { freq: 2217, sound: '❌ X-ray!', color: '#e17055' },
+          'y': { freq: 2349, sound: '💛 Yellow!', color: '#ffeaa7' },
+          'z': { freq: 2637, sound: '⚡ Zap!', color: '#fd79a8' },
+          ' ': { freq: 150, sound: '🚀 Space!', color: '#636e72' },
+          '1': { freq: 261, sound: '1️⃣ One!', color: '#ff6b6b' },
+          '2': { freq: 294, sound: '2️⃣ Two!', color: '#4ecdc4' },
+          '3': { freq: 329, sound: '3️⃣ Three!', color: '#45b7d1' },
+          '4': { freq: 349, sound: '4️⃣ Four!', color: '#96ceb4' },
+          '5': { freq: 392, sound: '5️⃣ Five!', color: '#ffeaa7' }
+      };
+
+      const soundDisplay = document.getElementById('soundDisplay');
+
+      function playSound(frequency, duration = 0.3) {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+          oscillator.type = 'sine';
+          
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + duration);
+      }
+
+      function handleKeyPress(key) {
+          const keyLower = key.toLowerCase();
+          if (soundMap[keyLower]) {
+              const sound = soundMap[keyLower];
+              
+              // Play sound
+              playSound(sound.freq);
+              
+              // Update display
+              soundDisplay.textContent = sound.sound;
+              soundDisplay.style.color = sound.color;
+              
+              // Highlight corresponding button
+              const button = document.querySelector(`[data-key="${keyLower}"]`);
+              if (button) {
+                  button.classList.add('active');
+                  setTimeout(() => button.classList.remove('active'), 200);
+              }
+              
+              // Reset display after 2 seconds
+              setTimeout(() => {
+                  soundDisplay.textContent = 'Press a key!';
+                  soundDisplay.style.color = 'white';
+              }, 2000);
+          }
+      }
+
+      // Keyboard event listener
+      document.addEventListener('keydown', (event) => {
+          // Resume audio context if needed (browser requirement)
+          if (audioContext.state === 'suspended') {
+              audioContext.resume();
+          }
+          
+          handleKeyPress(event.key);
+      });
+
+      // Button click listeners
+      document.querySelectorAll('.key-button').forEach(button => {
+          button.addEventListener('click', () => {
+              if (audioContext.state === 'suspended') {
+                  audioContext.resume();
+              }
+              handleKeyPress(button.dataset.key);
+          });
+      });
+
+      // Initialize audio context on first user interaction
+      document.addEventListener('click', () => {
+          if (audioContext.state === 'suspended') {
+              audioContext.resume();
+          }
+      }, { once: true });
+  </script>
+</body>
+</html>
